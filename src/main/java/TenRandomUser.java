@@ -15,17 +15,27 @@ public class TenRandomUser {
     public static void main(String args[]) throws JsonGenerationException, JsonMappingException, IOException {
 
         TenRandomUser tenRandomUser = new TenRandomUser();
-        // ObjectMapper is used and write the json data
+        // ObjectMapper is used to read and write the json data using Jackson libraries
         ObjectMapper mapper = new ObjectMapper();
         for (int i = 0; i < 10; i++) {
-            JsonNode jsonUser = tenRandomUser.getRandomUser(mapper);
+            try {
+                JsonNode jsonUser = tenRandomUser.getRandomUser(mapper);
+
 //            System.out.println(jsonUser);
-            System.out.println("Deserializing JSON to Object:");
-            User user = mapper.treeToValue(jsonUser, User.class);
-            System.out.println(user.getName().getFirst() + " " + user.getName().getLast());
+                System.out.println("Deserializing JSON to Object:");
+                User user = mapper.treeToValue(jsonUser, User.class);
+                System.out.println(user.getName().getFirst() + " " + user.getName().getLast());
 //            System.out.println(user.toString());
+            } catch (JsonGenerationException jge) {
+                System.out.println(jge);
+            } catch (JsonMappingException jse) {
+                System.out.println(jse);
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
         }
     }
+
 
     public JsonNode getRandomUser(ObjectMapper mapper) throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
@@ -34,6 +44,7 @@ public class TenRandomUser {
                 .url("https://randomuser.me/api/")
                 .method("GET", null)
                 .build();
+
         Response response = client.newCall(request).execute();
         String jsonData = response.body().string();
         JsonNode actualObj = mapper.readTree(jsonData);
