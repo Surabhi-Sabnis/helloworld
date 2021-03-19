@@ -14,7 +14,7 @@ import okhttp3.Response;
 
 public class TenRandomUser {
 
-    public static void main(String args[]) throws JsonGenerationException, JsonMappingException, IOException {
+    public static void main(String args[]) {
 
         TenRandomUser tenRandomUser = new TenRandomUser();
         // ObjectMapper is used to read and write the json data using Jackson libraries
@@ -28,28 +28,32 @@ public class TenRandomUser {
                 User user = mapper.treeToValue(jsonUser, User.class);
                 UserList.add(user);
                 System.out.println(user.getName().getFirst() + " " + user.getName().getLast());
-            } catch (JsonGenerationException jge) {
-                System.out.println(jge);
-            } catch (JsonMappingException jse) {
-                System.out.println(jse);
-            } catch (Exception ex) {
-                System.out.println(ex);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
 
-    public JsonNode getRandomUser(ObjectMapper mapper) throws IOException {
-        OkHttpClient client = new OkHttpClient().newBuilder()
-                .build();
-        Request request = new Request.Builder()
-                .url("https://randomuser.me/api/")
-                .method("GET", null)
-                .build();
+    public JsonNode getRandomUser(ObjectMapper mapper) {
+//catch exception here only
+        try {
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .build();
+            Request request = new Request.Builder()
+                    .url("https://randomuser.me/api/")
+                    .method("GET", null)
+                    .build();
 
-        Response response = client.newCall(request).execute();
-        String jsonData = response.body().string();
-        JsonNode actualObj = mapper.readTree(jsonData);
-        return actualObj.get("results").get(0);
+            Response response = client.newCall(request).execute();
+            String jsonData = response.body().string();
+            JsonNode actualObj = mapper.readTree(jsonData);
+            return actualObj.get("results").get(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
 // import com.fasterxml.jackson.databind.ObjectMapper; // version 2.11.1
