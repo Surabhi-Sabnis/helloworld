@@ -1,4 +1,6 @@
+
 import java.io.*;
+import java.util.*;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,15 +19,21 @@ public class TenRandomUser {
         TenRandomUser tenRandomUser = new TenRandomUser();
         // ObjectMapper is used to read and write the json data using Jackson libraries
         ObjectMapper mapper = new ObjectMapper();
-        for (int i = 0; i < 10; i++) {
+        List<User> UserList = new ArrayList();
+
+        while (UserList.size() < 10) {
+
             try {
+
                 JsonNode jsonUser = tenRandomUser.getRandomUser(mapper);
 
 //            System.out.println(jsonUser);
                 System.out.println("Deserializing JSON to Object:");
                 User user = mapper.treeToValue(jsonUser, User.class);
+                UserList.add(user);
                 System.out.println(user.getName().getFirst() + " " + user.getName().getLast());
 //            System.out.println(user.toString());
+
             } catch (JsonGenerationException jge) {
                 System.out.println(jge);
             } catch (JsonMappingException jse) {
@@ -50,8 +58,8 @@ public class TenRandomUser {
         JsonNode actualObj = mapper.readTree(jsonData);
         return actualObj.get("results").get(0);
     }
-
 }
+
 
 // import com.fasterxml.jackson.databind.ObjectMapper; // version 2.11.1
 // import com.fasterxml.jackson.annotation.JsonProperty; // version 2.11.1
@@ -585,5 +593,3 @@ class User {
 
     String nat;
 }
-
-
