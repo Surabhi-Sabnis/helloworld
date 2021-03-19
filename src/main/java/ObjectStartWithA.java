@@ -1,18 +1,19 @@
-
-import java.io.*;
-import java.util.*;
-import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-public class TenRandomUser {
+public class ObjectStartWithA {
 
     public static void main(String args[]) throws JsonGenerationException, JsonMappingException, IOException {
 
@@ -20,14 +21,20 @@ public class TenRandomUser {
         // ObjectMapper is used to read and write the json data using Jackson libraries
         ObjectMapper mapper = new ObjectMapper();
         List<User> UserList = new ArrayList();
-        // While Loop is used to get the 10 object
+
         while (UserList.size() < 10) {
+
             try {
+
                 JsonNode jsonUser = tenRandomUser.getRandomUser(mapper);
+
+//            System.out.println(jsonUser);
                 System.out.println("Deserializing JSON to Object:");
                 User user = mapper.treeToValue(jsonUser, User.class);
                 UserList.add(user);
                 System.out.println(user.getName().getFirst() + " " + user.getName().getLast());
+//            System.out.println(user.toString());
+
             } catch (JsonGenerationException jge) {
                 System.out.println(jge);
             } catch (JsonMappingException jse) {
@@ -37,6 +44,7 @@ public class TenRandomUser {
             }
         }
     }
+
 
     public JsonNode getRandomUser(ObjectMapper mapper) throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
@@ -52,6 +60,8 @@ public class TenRandomUser {
         return actualObj.get("results").get(0);
     }
 }
+
+
 // import com.fasterxml.jackson.databind.ObjectMapper; // version 2.11.1
 // import com.fasterxml.jackson.annotation.JsonProperty; // version 2.11.1
 /* ObjectMapper om = new ObjectMapper();
