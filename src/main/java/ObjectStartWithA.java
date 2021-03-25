@@ -6,38 +6,51 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class TenRandomUser {
-
+public class ObjectStartWithA {
     public static void main(String args[]) {
 
-        TenRandomUser tenRandomUser = new TenRandomUser();
+        ObjectStartWithA objectStartWithA = new ObjectStartWithA();
         // ObjectMapper is used to read and write the json data using Jackson libraries
         ObjectMapper mapper = new ObjectMapper();
         List<User> userList = new ArrayList();
+
         // For Loop is used to get the 10 object
         int numberOfUser = 10;
-        for (int i = 0; i < numberOfUser; i++) {
+        while (userList.size() < numberOfUser) {
             try {
-                JsonNode jsonUser = tenRandomUser.getRandomUser(mapper);
-                System.out.println("Deserializing JSON to Object:");
+                JsonNode jsonUser = objectStartWithA.getRandomUser(mapper);
                 User user = mapper.treeToValue(jsonUser, User.class);
-                if (user != null) {
-                    userList.add(user);
-                    System.out.println(user.getName().getFirst() + " " + user.getName().getLast());
-                } else {
-                    System.out.println("Not getting user");
-                }
+
+                userList.add(user);
+                startWith(user);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private static void startWith(User user) {
+        String startStr = "A";
+        String startStrs = "E";
+        String endStr = "K";
+        String a = "a";
+        String e = "e";
+        String k = "k";
+        boolean result1 = startStr.equalsIgnoreCase(a);
+        boolean result2 = startStrs.equalsIgnoreCase(e);
+        boolean result3 = endStr.equalsIgnoreCase(k);
+        if (user.getName().first.startsWith(startStr) || user.getName().first.startsWith(startStrs) && !user.getName().first.startsWith(k)) {
+            System.out.println(user.getName().getFirst() + " " + user.getName().getLast() + " " + result1 + " " + result2 + " " + result3);
+        }
+        return;
     }
 
     public JsonNode getRandomUser(ObjectMapper mapper) {
