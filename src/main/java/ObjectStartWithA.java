@@ -26,9 +26,10 @@ public class ObjectStartWithA {
             try {
                 JsonNode jsonUser = objectStartWithA.getRandomUser(mapper);
                 User user = mapper.treeToValue(jsonUser, User.class);
-
-                userList.add(user);
-                startWith(user);
+                user = startWith(user);
+                if (user != null) {
+                    userList.add(user);
+                }
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -37,20 +38,16 @@ public class ObjectStartWithA {
         }
     }
 
-    private static void startWith(User user) {
-        String startStr = "A";
-        String startStrs = "E";
-        String endStr = "K";
-        String a = "a";
-        String e = "e";
-        String k = "k";
-        boolean result1 = startStr.equalsIgnoreCase(a);
-        boolean result2 = startStrs.equalsIgnoreCase(e);
-        boolean result3 = endStr.equalsIgnoreCase(k);
-        if (user.getName().first.startsWith(startStr) || user.getName().first.startsWith(startStrs) && !user.getName().first.startsWith(k)) {
-            System.out.println(user.getName().getFirst() + " " + user.getName().getLast() + " " + result1 + " " + result2 + " " + result3);
+    private static User startWith(User user) {
+        String firstName = user.getName().getFirst().toUpperCase(Locale.ROOT);
+        String lastName = user.getName().getLast().toUpperCase(Locale.ROOT);
+        String A = "A";
+        String E = "E";
+        String K = "K";
+        if (firstName.startsWith(A) || firstName.startsWith(E) && !firstName.startsWith(K)) {
+            System.out.println(firstName + " " + lastName);
         }
-        return;
+        return user;
     }
 
     public JsonNode getRandomUser(ObjectMapper mapper) {
